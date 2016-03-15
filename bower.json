@@ -4,7 +4,7 @@
   "dependencies": {
     "modernizr": "~2.8.1",
     "primer-css": "~2.2.1",
-    "Kinvey": "1.4.3",
+    "kinvey": "*",
     "jquery": "~2.1.4",
     "prism": "~1.0.0",
     "bootstrap-sass": "~3.3.5"
