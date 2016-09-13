@@ -10,7 +10,16 @@ var micHostName = window.MIC_HOSTNAME;
 
 var app = window.app = {
   init: function(options) {
-    return Kinvey.init(options).then(function(user) {
+    Kinvey.init(options);
+    return Kinvey.ping().then(function(response) {
+      console.log(response);
+      return Kinvey.User.getActiveUser();
+    }).then(function(user){
+      console.log(user);
+      if (user) {
+        user = user.me();
+      }
+
       $('#initialize').fadeOut(250);
 
       if (user) {
@@ -19,17 +28,17 @@ var app = window.app = {
       else {
         $('#login').fadeIn(250);
       }
-
-      return user;
+    })
+    .catch(function(err){
+      console.log(err);
     });
   },
 
   login: function() {
-    return Kinvey.User.MIC.loginWithAuthorizationCodeLoginPage(redirectUri).then(function(user) {
+    return Kinvey.User.loginWithMIC(redirectUri, Kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, {'version': 'v2'}).then(function(user) {
       $('#login').fadeOut(250, function() {
         $('#logout').fadeIn(250);
       });
-
       return user;
     }).catch(function(err) {
       $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
