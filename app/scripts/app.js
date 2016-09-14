@@ -2,11 +2,11 @@
 
 'use strict';
 
-var apiHostName = window.API_HOSTNAME;
+var apiHostname = window.API_HOSTNAME;
 var appKey = window.APP_KEY;
 var appSecret = window.APP_SECRET;
 var redirectUri = window.REDIRECT_URI;
-var micHostName = window.MIC_HOSTNAME;
+var micHostname = window.MIC_HOSTNAME;
 var micOptions = window.MIC_OPTIONS;
 
 var app = window.app = {
@@ -69,10 +69,10 @@ var app = window.app = {
 
 // Initialize the app
 app.init({
-  //apiHostName: apiHostName,
+  apiHostname: apiHostname,
   appKey: appKey,
-  appSecret: appSecret
-  //micHostName: micHostName
+  appSecret: appSecret,
+  micHostname: micHostname
 }).catch(function(err) {
   $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
   $('#initialize').append('<p>Please make sure you followed all the instructions in the README to setup the project. The README can be found at the root of the project. Did you forget to run <b>node ./setup</b>?');
