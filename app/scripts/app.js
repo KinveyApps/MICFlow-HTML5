@@ -7,6 +7,7 @@ var appKey = window.APP_KEY;
 var appSecret = window.APP_SECRET;
 var redirectUri = window.REDIRECT_URI;
 var micHostName = window.MIC_HOSTNAME;
+var micOptions = window.MIC_OPTIONS;
 
 var app = window.app = {
   init: function(options) {
@@ -15,7 +16,6 @@ var app = window.app = {
       console.log(response);
       return Kinvey.User.getActiveUser();
     }).then(function(user){
-      console.log(user);
       if (user) {
         user = user.me();
       }
@@ -31,11 +31,20 @@ var app = window.app = {
     })
     .catch(function(err){
       console.log(err);
+      if (err.name === 'InvalidCredentialsError') {
+        $('#initialize').fadeOut(250);
+        app.logout();
+      }
+      else {
+        $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
+        $('#initialize').append('<p>Please make sure you followed all the instructions in the README to setup the project. The README can be found at the root of the project. Did you forget to run <b>node ./setup</b>?');
+      }
     });
   },
 
   login: function() {
-    return Kinvey.User.loginWithMIC(redirectUri, Kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, {'version': 'v2'}).then(function(user) {
+    return Kinvey.User.loginWithMIC(redirectUri, Kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, micOptions).then(function(user) {
+      console.log(user);
       $('#login').fadeOut(250, function() {
         $('#logout').fadeIn(250);
       });
