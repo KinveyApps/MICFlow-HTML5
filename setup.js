@@ -43,6 +43,11 @@ prompt.get({
       description: chalk.white('What is your redirect uri?'),
       default: 'http://localhost:9000/callback',
       required: true
+    },
+    micVersion: {
+      description: chalk.white('Which version of MIC is required?'),
+      default: 'v1',
+      required: true
     }
   }
 }, function(err, result) {
@@ -57,7 +62,9 @@ prompt.get({
     'window.APP_SECRET = \'' + result.appSecret + '\';\n' +
     'window.API_HOSTNAME = \'' + result.apiHostname + '\';\n' +
     'window.MIC_HOSTNAME = \'' + result.micHostname + '\';\n' +
-    'window.REDIRECT_URI = \'' + result.redirectUri + '\';';
+    'window.REDIRECT_URI = \'' + result.redirectUri + '\';\n' +
+    'window.MIC_VERSION = \'' + result.micVersion + '\';\n' +
+    'window.MIC_OPTIONS = {\'version\': window.MIC_VERSION };\n';
 
   console.log();
   console.log('About to write to ' + configFile + '.');

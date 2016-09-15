@@ -2,34 +2,46 @@
 
 'use strict';
 
-var apiHostName = window.API_HOSTNAME;
+var apiHostname = window.API_HOSTNAME;
 var appKey = window.APP_KEY;
 var appSecret = window.APP_SECRET;
 var redirectUri = window.REDIRECT_URI;
-var micHostName = window.MIC_HOSTNAME;
+var micHostname = window.MIC_HOSTNAME;
+var micOptions = window.MIC_OPTIONS;
 
 var app = window.app = {
   init: function(options) {
-    return Kinvey.init(options).then(function(user) {
+    try
+    {
+      Kinvey.init(options);
+      var user = Kinvey.User.getActiveUser();
       $('#initialize').fadeOut(250);
-
       if (user) {
         $('#logout').fadeIn(250);
       }
       else {
         $('#login').fadeIn(250);
       }
-
-      return user;
-    });
+    }
+    catch (err)
+    {
+      if (err.name === 'InvalidCredentialsError') {
+        $('#initialize').fadeOut(250);
+        app.logout();
+      }
+      else {
+        $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
+        $('#initialize').append('<p>Please make sure you followed all the instructions in the README to setup the project. The README can be found at the root of the project. Did you forget to run <b>node ./setup</b>?');
+      }
+    }
   },
 
   login: function() {
-    return Kinvey.User.MIC.loginWithAuthorizationCodeLoginPage(redirectUri).then(function(user) {
+    return Kinvey.User.loginWithMIC(redirectUri, Kinvey.AuthorizationGrant.AuthorizationCodeLoginPage, micOptions).then(function(user) {
+      console.log(user);
       $('#login').fadeOut(250, function() {
         $('#logout').fadeIn(250);
       });
-
       return user;
     }).catch(function(err) {
       $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
@@ -51,10 +63,10 @@ var app = window.app = {
 
 // Initialize the app
 app.init({
-  //apiHostName: apiHostName,
+  apiHostname: apiHostname,
   appKey: appKey,
-  appSecret: appSecret
-  //micHostName: micHostName
+  appSecret: appSecret,
+  micHostname: micHostname
 }).catch(function(err) {
   $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
   $('#initialize').append('<p>Please make sure you followed all the instructions in the README to setup the project. The README can be found at the root of the project. Did you forget to run <b>node ./setup</b>?');
