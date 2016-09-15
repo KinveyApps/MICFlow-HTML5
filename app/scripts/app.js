@@ -11,26 +11,20 @@ var micOptions = window.MIC_OPTIONS;
 
 var app = window.app = {
   init: function(options) {
-    Kinvey.init(options);
-    return Kinvey.ping().then(function(response) {
-      console.log(response);
-      return Kinvey.User.getActiveUser();
-    }).then(function(user){
-      if (user) {
-        user = user.me();
-      }
-
+    try
+    {
+      Kinvey.init(options);
+      var user = Kinvey.User.getActiveUser();
       $('#initialize').fadeOut(250);
-
       if (user) {
         $('#logout').fadeIn(250);
       }
       else {
         $('#login').fadeIn(250);
       }
-    })
-    .catch(function(err){
-      console.log(err);
+    }
+    catch (err)
+    {
       if (err.name === 'InvalidCredentialsError') {
         $('#initialize').fadeOut(250);
         app.logout();
@@ -39,7 +33,7 @@ var app = window.app = {
         $('#initialize').html('<b>An error has occurred:</b> ' + err).addClass('text-closed');
         $('#initialize').append('<p>Please make sure you followed all the instructions in the README to setup the project. The README can be found at the root of the project. Did you forget to run <b>node ./setup</b>?');
       }
-    });
+    }
   },
 
   login: function() {
